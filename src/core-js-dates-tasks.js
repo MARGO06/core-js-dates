@@ -17,8 +17,9 @@
  * '01 Jan 1970 00:00:00 UTC' => 0
  * '04 Dec 1995 00:12:00 UTC' => 818035920000
  */
-function dateToTimestamp(/* date */) {
-  throw new Error('Not implemented');
+function dateToTimestamp(date) {
+  const dates = new Date(date);
+  return dates.getTime();
 }
 
 /**
@@ -31,8 +32,29 @@ function dateToTimestamp(/* date */) {
  * Date(2023, 5, 1, 8, 20, 55) => '08:20:55'
  * Date(2015, 10, 20, 23, 15, 1) => '23:15:01'
  */
-function getTime(/* date */) {
-  throw new Error('Not implemented');
+function getTime(date) {
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+  let resultHours;
+  let resultMinutes;
+  let resultSeconds;
+  if (hours < 10) {
+    resultHours = `0${hours}`;
+  } else {
+    resultHours = hours;
+  }
+  if (minutes < 10) {
+    resultMinutes = `0${minutes}`;
+  } else {
+    resultMinutes = minutes;
+  }
+  if (seconds < 10) {
+    resultSeconds = `0${seconds}`;
+  } else {
+    resultSeconds = seconds;
+  }
+  return `${resultHours}:${resultMinutes}:${resultSeconds}`;
 }
 
 /**
@@ -46,8 +68,36 @@ function getTime(/* date */) {
  * '03 Dec 1995 00:12:00 UTC' => 'Sunday'
  * '2024-01-30T00:00:00.000Z' => 'Tuesday'
  */
-function getDayName(/* date */) {
-  throw new Error('Not implemented');
+function getDayName(date) {
+  const dates = new Date(date);
+  const number = dates.getDay();
+  let day;
+  switch (number) {
+    case 0:
+      day = 'Sunday';
+      break;
+    case 1:
+      day = 'Monday';
+      break;
+    case 2:
+      day = 'Tuesday';
+      break;
+    case 3:
+      day = 'Wednesday';
+      break;
+    case 4:
+      day = 'Thursday';
+      break;
+    case 5:
+      day = 'Friday';
+      break;
+    case 6:
+      day = 'Saturday';
+      break;
+    default:
+      day = 'nothing';
+  }
+  return day;
 }
 
 /**
@@ -61,8 +111,20 @@ function getDayName(/* date */) {
  * Date('2024-02-13T00:00:00Z') => Date('2024-02-16T00:00:00Z')
  * Date('2024-02-16T00:00:00Z') => Date('2024-02-23T00:00:00Z')
  */
-function getNextFriday(/* date */) {
-  throw new Error('Not implemented');
+function getNextFriday(date) {
+  const currentDate = date.getDate();
+  const currentDay = date.getDay();
+  let nextFriday;
+  if (currentDay < 5) {
+    nextFriday = currentDate + (5 - currentDay);
+  }
+  if (currentDay === 5) {
+    nextFriday = currentDate + 7;
+  }
+  if (currentDay === 6) {
+    nextFriday = currentDate + 6;
+  }
+  return new Date(date.setDate(nextFriday));
 }
 
 /**
@@ -76,8 +138,9 @@ function getNextFriday(/* date */) {
  * 1, 2024 => 31
  * 2, 2024 => 29
  */
-function getCountDaysInMonth(/* month, year */) {
-  throw new Error('Not implemented');
+function getCountDaysInMonth(month, year) {
+  const dates = new Date(year, month);
+  return dates.toJSON().slice(8, 10);
 }
 
 /**
