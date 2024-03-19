@@ -70,7 +70,7 @@ function getTime(date) {
  */
 function getDayName(date) {
   const dates = new Date(date);
-  const number = dates.getDay();
+  const number = dates.getUTCDay();
   let day;
   switch (number) {
     case 0:
@@ -113,7 +113,7 @@ function getDayName(date) {
  */
 function getNextFriday(date) {
   const currentDate = date.getDate();
-  const currentDay = date.getDay();
+  const currentDay = date.getUTCDay();
   let nextFriday;
   if (currentDay < 5) {
     nextFriday = currentDate + (5 - currentDay);
@@ -139,8 +139,9 @@ function getNextFriday(date) {
  * 2, 2024 => 29
  */
 function getCountDaysInMonth(month, year) {
-  const dates = new Date(year, month);
-  return dates.toJSON().slice(8, 10);
+  const rightMonth = month - 1;
+  const dates = new Date(year, rightMonth + 1, 0);
+  return dates.getUTCDate();
 }
 
 /**
@@ -158,26 +159,26 @@ function getCountDaysOnPeriod(dateStart, dateEnd) {
   let result;
   const firstDates = new Date(dateStart);
   const secondDates = new Date(dateEnd);
-  const firstDay = firstDates.getDate();
-  const firstMouth = firstDates.getMonth();
-  const lastDay = secondDates.getDate();
-  const lastMouth = secondDates.getMonth();
+  const firstDay = +firstDates.getUTCDate();
+  const firstMouth = firstDates.getUTCMonth();
+  const lastDay = +secondDates.getUTCDate();
+  const lastMouth = secondDates.getUTCMonth();
+  const sumMouth = lastMouth - firstMouth;
   if (firstMouth === lastMouth) {
     result = lastDay - firstDay + 1;
   }
-  const sumMouth = lastMouth - firstMouth;
   if (firstMouth !== lastMouth && sumMouth === 1) {
-    const dates = new Date(firstDates.getFullYear(), lastMouth);
-    const lastDayOfMouth = dates.toJSON().slice(8, 10);
-    result = lastDayOfMouth - firstDay + 1 + lastDay;
+    const dates = new Date(firstDates.getFullYear(), lastMouth + 1, 0);
+    const fullFirstMouth = dates.getUTCDate();
+    result = fullFirstMouth - firstDay;
   }
   if (firstMouth === 11) {
-    const dates = new Date(firstDates.getFullYear(), firstMouth);
-    const fullMounts = +dates.toJSON().slice(8, 10);
-    const firstMountDays = fullMounts - firstDay + 1;
-    const datesFirstMouth = new Date(secondDates.getFullYear(), 1);
-    const fullFirstMouth = +datesFirstMouth.toJSON().slice(8, 10);
-    result = firstMountDays + fullFirstMouth + lastDay + 1;
+    const dates = new Date(firstDates.getFullYear(), firstMouth + 1, 0);
+    const fullFirstMouth = dates.getUTCDate();
+    const firstMountDays = fullFirstMouth - firstDay + 1;
+    const datesFirstMouth = new Date(secondDates.getFullYear(), 1 + 1, 0);
+    const fullSecondMouth = datesFirstMouth.getUTCDate();
+    result = firstMountDays + fullSecondMouth + lastDay + 2;
   }
   return result;
 }
@@ -261,8 +262,9 @@ function formatDate(date) {
 function getCountWeekendsInMonth(month, year) {
   const rightMonth = month - 1;
   const dates = new Date(year, rightMonth);
-  const firsDay = dates.getDay();
-  const lastDay = dates.toJSON().slice(8, 10);
+  const firsDay = dates.getUTCDay();
+  const dates2 = new Date(year, rightMonth + 1, 0);
+  const lastDay = dates2.getUTCDate();
   const fullWeeks = Math.floor(lastDay / 7) * 2;
   const notFullWeeks = lastDay % 7;
   let result;
@@ -317,8 +319,9 @@ function getWeekNumberByDate(date) {
       }
     }
     if (i > 0) {
-      const days = new Date(year, i - 1);
-      const wholeDays = +days.toJSON().slice(8, 10);
+      const rightMonth = i - 1;
+      const dates = new Date(year, rightMonth + 1, 0);
+      const wholeDays = dates.getUTCDate();
       allDays += wholeDays;
       if (firstDay === 1) {
         const wholeWeeks = Math.round((allDays + day) / 7);
@@ -334,7 +337,6 @@ function getWeekNumberByDate(date) {
       }
     }
   }
-
   return result;
 }
 
